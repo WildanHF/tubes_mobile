@@ -1,99 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Historypage extends StatelessWidget {
-  const Historypage({super.key});
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
+
+  @override
+  _HistoryPageState createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  List<dynamic> paymentHistory = [];
+  bool isLoading = true;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPaymentHistory();
+  }
+
+  // Fetch payment history from the API
+  Future<void> _fetchPaymentHistory() async {
+    try {
+      const String BASE_URL =
+          "http://127.0.0.1:3000"; // Ganti dengan URL backend Anda
+      final response =
+          await http.get(Uri.parse('$BASE_URL/api/Account/payment-history'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          paymentHistory = data;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Empty payment history';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An error occurred: $e';
+        isLoading = false;
+      });
+    }
+  }
+
+  // Delete payment history from the API
+  Future<void> _deletePayment(String paymentId) async {
+    try {
+      const String BASE_URL =
+          "http://127.0.0.1:3000"; // Ganti dengan URL backend Anda
+      final response = await http.delete(
+          Uri.parse('$BASE_URL/api/Account/payment-history/$paymentId'));
+
+      if (response.statusCode == 200) {
+        setState(() {
+          paymentHistory.removeWhere((payment) => payment['id'] == paymentId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Payment history deleted successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Error deleting payment history: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting payment: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('History'),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 255, 245, 107),
         foregroundColor: Colors.black,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: const [
-                NotificationItem(
-                  icon: Icons.attach_money_outlined,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '08 Nov 2023 • 9:40 PM',
-                  amount: 'Rp. 50.000',
-                ),
-                NotificationItem(
-                  icon: Icons.attach_money_outlined,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '06 Nov 2023 • 2:09 PM',
-                  amount: 'Rp. 75.000',
-                ),
-                NotificationItem(
-                  icon: Icons.attach_money_outlined,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '04 Nov 2023 • 1:09 PM',
-                  amount: 'Rp. 150.000',
-                ),
-                NotificationItem(
-                  icon: Icons.attach_money_outlined,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '01 Nov 2023 • 12:09 PM',
-                  amount: 'Rp. 50.000',
-                ),
-                NotificationItem(
-                  icon: Icons.fastfood,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '01 Nov 2023 • 12:09 PM',
-                  amount: '5 Kg',
-                ),
-                NotificationItem(
-                  icon: Icons.fastfood,
-                  title: 'Donate to Isha Foundation',
-                  subtitle: '01 Nov 2023 • 12:09 PM',
-                  amount: '1 Kg',
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class NotificationItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String amount;
-
-  const NotificationItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.amount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.yellow,
-        child: Icon(icon, color: Colors.black),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text(subtitle),
-      trailing: Text(
-        amount,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(child: Text(errorMessage!))
+              : paymentHistory.isEmpty
+                  ? const Center(child: Text('No payment history available'))
+                  : ListView.builder(
+                      itemCount: paymentHistory.length,
+                      itemBuilder: (context, index) {
+                        final payment = paymentHistory[index];
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.yellow,
+                            child: Icon(Icons.attach_money_outlined,
+                                color: Colors.black),
+                          ),
+                          title: Text(payment['title']),
+                          subtitle:
+                              Text('${payment['date']} • ${payment['time']}'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Rp. ${payment['amount']}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  _deletePayment(payment['id']);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
     );
   }
 }

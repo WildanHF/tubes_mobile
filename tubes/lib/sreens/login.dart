@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         const String BASE_URL =
-            "http://192.168.100.14:3000"; // Ganti dengan URL backend Anda
+            "http://127.0.0.1:3000"; // Ganti dengan URL backend Anda
         final response = await http.post(
           Uri.parse('$BASE_URL/api/Account/login'),
           headers: {"Content-Type": "application/json"},
@@ -69,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           // Simpan status login ke Shared Preferences
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('user_id', userId); // Simpan user_id
 
           // Tampilkan dialog login berhasil
           showDialog(
