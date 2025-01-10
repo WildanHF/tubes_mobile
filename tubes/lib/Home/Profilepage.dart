@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tubes/Home/ContactUs.dart';
+import 'package:tubes/Profile/ContactUs.dart';
+import 'package:tubes/Profile/EditProfile.dart';
 import 'package:tubes/sreens/login.dart';
 
 class Profilepage extends StatelessWidget {
@@ -7,17 +8,18 @@ class Profilepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          // Background image is applied to the entire screen here
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/lapar.jpg'), // Your background image
-              fit: BoxFit.cover,
-              opacity: 0.15,
-            ),
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(), // Pastikan memenuhi layar
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image:
+                AssetImage('assets/images/lapar.png'), // Gambar latar belakang
+            fit: BoxFit.cover,
+            opacity: 0.15,
           ),
+        ),
+        child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -36,8 +38,8 @@ class Profilepage extends StatelessWidget {
                       SizedBox(height: 10),
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(
-                          'https://i.stack.imgur.com/l60Hf.png', // Your profile image URL
+                        backgroundImage: AssetImage(
+                          'assets/images/user.png', // Gambar profil dari assets
                         ),
                       ),
                       SizedBox(height: 10),
@@ -53,7 +55,6 @@ class Profilepage extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      // Aligned 'General' text to the left
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: Align(
@@ -75,17 +76,23 @@ class Profilepage extends StatelessWidget {
                           color: Colors.yellow,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        child: const ListTile(
-                          leading: Icon(Icons.lock),
-                          title: Text('Change Password'),
-                          trailing: Icon(Icons.arrow_forward_ios),
+                        child: ListTile(
+                          leading: const Icon(Icons.edit),
+                          title: const Text('Edit Profile'),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EditProfile(),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // More Section
                       Column(
                         children: [
-                          // Aligned 'More' text to the left
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             child: Align(
@@ -101,7 +108,6 @@ class Profilepage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          // Contact Us
                           Container(
                             margin:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
@@ -114,7 +120,6 @@ class Profilepage extends StatelessWidget {
                               title: const Text('Contact Us'),
                               trailing: const Icon(Icons.arrow_forward_ios),
                               onTap: () {
-                                // Navigasi ke halaman ContactUs
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -125,7 +130,6 @@ class Profilepage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          // Logout Button
                           Container(
                             margin:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
@@ -143,12 +147,11 @@ class Profilepage extends StatelessWidget {
                               trailing: const Icon(Icons.arrow_forward_ios,
                                   color: Colors.black),
                               onTap: () {
-                                // Navigasi ke halaman login
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          LoginPage()), // Ganti LoginPage dengan halaman login Anda
+                                    builder: (context) => LoginPage(),
+                                  ),
                                 );
                               },
                             ),

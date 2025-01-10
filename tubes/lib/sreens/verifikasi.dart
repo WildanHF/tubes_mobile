@@ -14,7 +14,7 @@ class Verifikasi extends StatelessWidget {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://10.0.2.2:3000/api/Account/request-reset'), // URL API Anda
+            'http://10.0.2.2:3000/request-reset-password'), // URL API Anda
         headers: {
           'Content-Type': 'application/json',
         },

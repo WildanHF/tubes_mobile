@@ -5,7 +5,6 @@ import 'package:tubes/Home/Profilepage.dart';
 import 'package:tubes/sreens/login.dart';
 import 'package:tubes/sreens/registrasi.dart';
 import 'package:tubes/sreens/opening.dart';
-import 'package:tubes/Home/Notifpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,8 +55,7 @@ class _NavbarState extends State<Navbar> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
     const Homepage(),
-    const Historypage(),
-    const NotifPage(),
+    const HistoryPage(),
     const Profilepage(), // Profile page placeholder
   ];
 
@@ -96,11 +94,6 @@ class _NavbarState extends State<Navbar> {
             icon: Icon(Icons.description_outlined),
             activeIcon: Icon(Icons.description),
             label: 'HISTORY',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_outlined),
-            activeIcon: Icon(Icons.notifications),
-            label: 'NOTIFICATION',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline_rounded),
