@@ -56,9 +56,9 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         const String BASE_URL =
-            "http://127.0.0.1:3000"; // Ganti dengan URL backend Anda
+            "http://192.168.100.42:3000"; // Ganti dengan URL backend Anda
         final response = await http.post(
-          Uri.parse('$BASE_URL/api/Account/login'),
+          Uri.parse('$BASE_URL/Account/login'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(data),
         );

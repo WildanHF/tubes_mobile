@@ -39,6 +39,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   colorful_safe_area: ^1.0.0
   flare_flutter: ^3.0.2
+  
 
   
 

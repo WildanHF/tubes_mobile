@@ -9,7 +9,7 @@ class Homepage extends StatelessWidget {
 
   Future<List<dynamic>> fetchCampaigns() async {
     final response =
-        await http.get(Uri.parse('http://192.168.100.7:3000/api/campaigns'));
+        await http.get(Uri.parse('http://192.168.100.42:3000/api/campaigns'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -99,13 +99,13 @@ class TrEvent extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.asset(
-          'assets/images/headline.png', // Lokasi file gambar di folder assets
-          fit: BoxFit.cover, // Agar gambar memenuhi box
-        ),
-      ),
+      // child: ClipRRect(
+      //   borderRadius: BorderRadius.circular(20),
+      //   child: Image.asset(
+      //     'assets/images/headline.png', // Lokasi file gambar di folder assets
+      //     fit: BoxFit.cover, // Agar gambar memenuhi box
+      //   ),
+      // ),
     );
   }
 }
@@ -179,6 +179,7 @@ class BottomBox extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => Donproto(
+                                  id: int.parse(campaign['id'].toString()),
                                   name: campaign['name'],
                                   description: campaign['description'],
                                 )),
